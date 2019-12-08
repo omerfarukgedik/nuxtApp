@@ -26,19 +26,15 @@ export default {
       observer: null
     }
   },
-
   mounted() {
     this.observer = new IntersectionObserver(entries => {
       this.handleIntersect(entries[0]);
     }, this.options);
-
     this.observer.observe(this.$refs.trigger);
   },
-
   beforeDestroy() {
     this.observer.disconnect();
   },
-
   methods: {
     handleIntersect(entry) {
       if (entry.isIntersecting) this.$emit("triggerIntersected");

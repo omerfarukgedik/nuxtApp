@@ -1,7 +1,7 @@
 <template>
   
     <div :class="this.sm">
-      <nuxt-link style="text-decoration: none" :to="'photos/' + id">
+      <nuxt-link style="text-decoration: none" :to="'photos/' + photo.id">
         <div class="container-fluid p-2 mb-2  rounded shadow">
           <img :src="photo.download_url" class="border border-dark">
           <span class="ml-1">[{{photo.id}}]</span>
@@ -12,26 +12,31 @@
 </template>
 
 <script>
-export default {
-  name: "Photo",
-  props: ["photo", "id"],
-  data () {
-    return {
-        sm: 'col-sm-6'
+  export default {
+    name: "Photo",
+    props: {
+      photo:{
+        type: Object,
+        required: true
+      }
+
+    },
+    data () {
+      return {
+          sm: 'col-sm-6'
+      }
+    },
+    mounted: function () { 
+      this.$root.$on('myEvent', (sm) => {
+      this.sm = sm;
+      })
     }
-  },
-  mounted: function () { 
-    this.$root.$on('myEvent', (sm) => {
-     this.sm = sm;
-    })
-  }
-};
+  };
 </script>
 
 <style scoped>
-
-.container img{
-  width: 100px;
-  height: 70px;
-}
+  .container img{
+    width: 100px;
+    height: 70px;
+  }
 </style>

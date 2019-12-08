@@ -10,7 +10,7 @@
     </div>
     
     <div class="row pt-2">
-      <Photo v-for="p in filteredPhotos" :key="p.id" :id="p.id" :photo="p"/>
+      <Photo v-for="(p, index) in  filteredPhotos" :key="index" :photo="p"/>
     </div>
     <Trigger @triggerIntersected="loadMore"/>
   </div>
@@ -18,7 +18,7 @@
 
 <script>
 import Photo from "@/components/Photo";
-import Trigger from '@/components/Trigger'
+import Trigger from "@/components/Trigger"
 
 
 export default {
@@ -28,46 +28,25 @@ export default {
   },
   data() {
     return {
-      photos: [],
-      page: 1,
       list: true,
       iconName: 'grip-lines',
       search: ''
     };
   },
   computed: {
-    filteredPhotos: function(){
-      return this.photos.filter((photo)=>{
+    photos(){
+      return this.$store.getters.getPhotos
+    },
+    filteredPhotos(search){
+      return this.$store.getters.getPhotos.filter((photo)=>{
         return photo.author.match(this.search);
       })
-    }
-  },
-  async created() {
-    const config = {
-      headers: {
-        Accept: "application/json"
-      }
-    };
-
-    try {
-      const res = await this.$axios.get("/v2/list?page=1&limit=10", config);
-
-      this.photos = res.data;
-    } catch (err) {
-      console.log(err);
+      
     }
   },
   methods: {
     async loadMore() {
-      const config = {
-        headers: {
-          Accept: "application/json"
-        }
-      };
-
-      this.page += 1;
-      const { data } = await this.$axios.get(`/v2/list?page=${this.page}&limit=10`, config);
-      this.photos = [...this.photos, ...data];
+      return this.$store.dispatch('addPhotos')
     },
     changeIcon: function(){
       if(this.list){
